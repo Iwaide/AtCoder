@@ -1,0 +1,5 @@
+*.json
+*.in
+*.out
+build
+main
