@@ -13,3 +13,7 @@ isdigit
 
 アルファベット何文字目か、をやるとき
 (int)(c - 'A')
+
+# char to int
+int (c - '0')
+int to char
