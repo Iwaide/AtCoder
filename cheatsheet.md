@@ -33,3 +33,6 @@ cout << s << '\n';//しかし s = abcda?????? とゴミが残る
 // そこで n から最後まで erase すれば完成
 s.erase(n,s.end());
 ```
+
+小数点部を固定して出力
+cout << fixed << std::setprecision(12) << ans << endl;
