@@ -4,24 +4,20 @@ using namespace std;
 #define rep2(i, s, n) for (int i = (s); i < (int)(n); i++)
 
 int main() {
-  int N;
-  cin >> N;
-  string S, T;
-  cin >> S >> T;
+  int N; string S, T;
+  cin >> N >> S >> T;
   S += "..";
   T += "..";
-
   map<string, int> dist;
   queue<string> q;
-  dist[S] = 0; q.push(S);
-
+  dist[S] = 0;
+  q.push(S);
   while(!q.empty()) {
     string s = q.front(); q.pop();
-    // .の位置を取得する
     int j = 0;
-    while(s[j] != '.') ++j;
+    while(s.at(j) != '.') j++;
     rep(i, N + 1) {
-      if (s[i] == '.' || s[i + 1] == '.') continue;
+      if (s.at(i) == '.' || s.at(i + 1) == '.') continue;
       string ns = s;
       swap(ns[i], ns[j]);
       swap(ns[i+1], ns[j+1]);
@@ -36,4 +32,3 @@ int main() {
     cout << -1 << endl;
   }
 }
-
