@@ -4,37 +4,23 @@ using namespace std;
 #define rep2(i, s, n) for (int i = (s); i < (int)(n); i++)
 
 int main() {
-  int N, K;
-  cin >> N >> K;
-  vector<char> S(N);
-  rep(i, N) cin >> S[i];
-  set<string> ans;
+  int N, K; string S;
+  cin >> N >> K >> S;
+  int ans;
   sort(S.begin(), S.end());
   do {
-    bool is_contain = false;
+    bool ok = true;
     // 範囲内に回文がふくまれてるか
-    for(int i = 0; i <= S.size() - K; i++) {
+    for(int i = 0; i <= N - K; i++) {
       bool is_palindrome = true;
       // 回分かどうか
-      for(int j = 0; j < K / 2; j++) {
-        char f = S.at(i + j);
-        char l = S.at(i + K - 1 - j);
-        // 回文じゃなかったらbreak;
-        if (f != l) {
-          is_palindrome = false;
-          break;
-        }
+      for(int j = 0; j < K; j++) {
+        is_palindrome &= S[i + j] == S[i + K - 1 -j];
       }
-      if (is_palindrome) {
-        is_contain = true;
-        break;
-      }
+      ok &= !is_palindrome;
     }
-    if (!is_contain) {
-      string s(S.begin(), S.end());
-      ans.insert(s);
-    }
+    ans += ok;
   } while(next_permutation(S.begin(), S.end()));
-  cout << ans.size() << endl;
+  cout << ans << endl;
 }
 

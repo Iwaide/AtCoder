@@ -40,4 +40,4 @@ struct UnionFind {
   int length(int x) {
     return size[find(x)];
   }
-}
+};
