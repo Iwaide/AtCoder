@@ -5,24 +5,23 @@ typedef long long ll;
 #define rep2(i, s, n) for (int i = (s); i < (int)(n); i++)
 
 int main() {
-  int N;
-  cin >> N;
-
-  vector<ll> A(N + 1);
-  vector<ll> B(N * 2 + 1);
-  rep2(i, 1, N + 1) cin >> A.at(i);
-
-  rep2(i, 1, N + 1) B.at(i) = B.at(i - 1) + A.at(i);
-  rep2(i, 1, N + 1) B.at(i + N) = B.at(i + N - 1) + A.at(i);
-  if (B.at(N) % 10ll != 0LL) {
+  int N; cin >> N;
+  vector<long long> A(N);
+  rep(i, N) cin >> A[i];
+  vector<long long> sum(2 * N + 1);
+  rep(i, 2 * N) {
+    sum[i + 1] = sum[i] + A[i % N];
+  }
+  if (sum.at(N) % 10LL != 0) {
     cout << "No" << endl;
     return 0;
   }
+  long long div10 = sum[N] / 10LL;
 
-  rep(i, N) {
-    ll goal = B.at(i) + B.at(N) / 10;
-    auto pos = lower_bound(B.begin(), B.end(), goal);
-    if (*pos == goal) {
+  rep(i, 2 * N + 1) {
+    long long sum_i = sum[i];
+    long long target = div10 + sum[i];
+    if (binary_search(sum.begin(), sum.end(), target)) {
       cout << "Yes" << endl;
       return 0;
     }
