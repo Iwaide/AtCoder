@@ -8,6 +8,9 @@ template<class T> inline bool chmax(T& a, T b) { if (a < b) { a = b; return true
 // N, N, Nの3次元配列が与えられる
 // クエリでは、Lx~Rx, Ly~Ry, Lz~Rzの合計を出す
 // 3次元累積和の問題っぽい
+// 1辺の長さが2のブロックを考えるといいかも？
+// 下、斜め下、右のブロックの累積と新しい頂点を足して、限定以外の３つを引いて引きすぎた原点をもう一度足す、みたいなイメージ？
+// なんか解き方さえわかればAI使っていいよ、みたいな問題かもしれん。でも年月日、とかで利用時間出す、みたいなのも3次元累積和かも
 int main() {
   int N; cin >> N;
   vector<vector<vector<int>>> A(N, vector<vector<int>>(N, vector<int>(N)));
