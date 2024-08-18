@@ -35,54 +35,30 @@ void print_vector(vector<T> &vec) {
   }
 }
 
-// カスみたいな解き方
-int main()
-{
-  int N, K;
-  cin >> N >> K;
-  vector<int> R(N);
-  rep(i, N) cin >> R[i];
-  set<vector<int>> kouho;
-  rep2(a, 1, 6) {
-
-    rep2(b, 1, 6) {
-      rep2(c, 1, 6) {
-        rep2(d, 1, 6) {
-          rep2(e, 1, 6) {
-            rep2(f, 1, 6) {
-              rep2(g, 1, 6) {
-                rep2(h, 1, 6) {
-                  vector<int> tmp;
-                  tmp.push_back(a);
-                  if (N > 1) tmp.push_back(b);
-                  if (N > 2) tmp.push_back(c);
-                  if (N > 3) tmp.push_back(d);
-                  if (N > 4) tmp.push_back(e);
-                  if (N > 5) tmp.push_back(f);
-                  if (N > 6) tmp.push_back(g);
-                  if (N > 7) tmp.push_back(h);
-                  kouho.insert(tmp);
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-  
-  for(vector<int> tmp : kouho) {
-    bool can = true;
+int N, K;
+vector<int> seq(8);
+vector<int> R(8);
+void solve(int lv) {
+  if (lv == N) {
     int sum = 0;
-    rep(i, tmp.size()) {
-      if (tmp[i] > R[i]) {
-        can = false;
-        break;
+    rep(i, N) sum += seq[i];
+    if (sum % K == 0) {
+      rep(i, N) {
+        if (i) cout << " ";
+        cout << seq[i];
       }
-      sum += tmp[i];
-    }
-    if (can && sum % K == 0) {
-      print_vector(tmp);
+      cout << endl;
     }
   }
+  rep2(i, 1, R[lv] + 1) {
+    seq[lv] = i;
+    solve(lv+1);
+  }
+}
+
+int main() {
+  cin >> N >> K;
+  rep(i, N) cin >> R[i];
+  solve(0);
+  return 0;
 }
