@@ -17,56 +17,49 @@ void print_vector(vector<T> &vec) {
   }
 }
 
-map<int, set<int>> graph;
-queue<int> que;
-int N, K;
-set<int> V;
-set<int> used
-
-void dfs(int current, int cnt) {
-  if (used.size() == N) {
-    return;
-  }
-  used.insert(current);
-  if (V.count(current)) {
-    cnt++;
-  }
-  bool has_node = false;
-  for(auto n : graph[current]) {
-    
-  }
-}
-
 int main() {
+  int N, K;
   cin >> N >> K;
+  map<int, set<int>> graph;
+  set<int> res;
+  rep(i, N) res.insert(i);
+  vector<int> degree(N, 0);
   rep(i, N - 1) {
     int Ai, Bi; cin >> Ai >> Bi;
     Ai--; Bi--;
     graph[Ai].insert(Bi);
     graph[Bi].insert(Ai);
+    degree[Ai]++; degree[Bi]++;
   }
+  set<int> V;
   rep(i, K) {
     int vi; cin >> vi; vi--;
     V.insert(vi);
   }
-  dfs(V[0], 0);
+  queue<int> que;
+  rep(i, N) {
+    if (degree[i] == 1) {
+      que.push(i);
+    }
+  }
+  vector<bool> explored(N, false);
 
-  // for(auto t: tree) {
-  //   if (t.second.size() == 0) {
-  //     que.push(t.first);
-  //   }
-  // }
-  // set<int> ans;
-
-  // while(!que.empty()) {
-  //   int n = que.front(); que.pop();
-  //   if (V.count(n) || ans.count(n)) {
-  //     ans.insert(n);
-  //   }
-  //   for(int p : reverse[n]) {
-  //     que.push(p);
-  //   }
-  // }
-  // cout << ans.size() << endl;
+  while(!que.empty()) {
+    int z = que.front(); que.pop();
+    explored[z] = true;
+    // 葉が保護に含まれていたら？
+    // true => 何もしない
+    // false => treeから削除する(resから消す、紐づく頂点のdegreeを減らす, degreeが変わるはずなので1になったやつをqueに突っ込む)
+    if (!V.count(z)) {
+      res.erase(z);
+      for(int p: graph[z]) {
+        degree[p]--;
+        if (!explored[p] && degree[p] == 1) {
+          que.push(p);
+        }
+      }
+    }
+  }
+  cout << res.size() << endl;
 }
 

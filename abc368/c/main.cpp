@@ -20,40 +20,6 @@ vector<ll> H;
 int N;
 int current = 0;
 
-// きったないので後で直す
-ll solve(ll T) {
-  if (current == N) {
-    return T;
-  }
-
-  ll loop_cnt = 0;
-  if (H[current] >= 5) {
-    loop_cnt = H[current] / 5LL;
-    H[current] -= loop_cnt * 5LL;
-  }
-
-  vector<int> mod(3);
-  if (T % 3 == 0) {
-    mod = vector<int> { 3, 1, 1 };
-  } else if (T % 3 == 1) {
-    mod = vector<int> { 1, 1, 3 };
-  } else {
-    mod = vector<int> { 1, 3, 1 };
-  }
-
-  ll tmpT = 0;
-  while(H[current] > 0) {
-    H[current] -= mod[tmpT % 3];
-    tmpT++;
-  }
-  T += (tmpT + loop_cnt * 3);
-
-  if (H[current] <= 0) {
-    current += 1;
-  }
-  return solve(T);
-}
-
 // N人の敵が並んでいる、前からi番目の敵の体力はHi
 // 0で初期化された変数Tを使い、すべての敵の体力が0以下になるまで行動を繰り返す
 // Tを1増やす、その後体力が1である最も前の敵を攻撃する、
@@ -62,8 +28,22 @@ int main() {
   cin >> N;
   H.resize(N);
   rep(i, N) cin >> H[i];
+  ll T = 0;
 
-  ll ans = solve(1);
-  cout << --ans << endl;
+  for(auto h : H) {
+    ll loop_cnt = h / 5;
+    T += loop_cnt * 3;
+    h -= loop_cnt * 5;
+    while(h > 0) {
+      T += 1;
+      if (T % 3 == 0) {
+        h -= 3;
+      } else {
+        h -= 1;
+      }
+    }
+  }
+
+  cout << T << endl;
 }
 
