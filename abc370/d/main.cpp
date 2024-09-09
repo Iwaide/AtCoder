@@ -17,75 +17,56 @@ void print_vector(vector<T> &vec) {
   }
 }
 
-// H * Wのグリッドがある
-// すべてのマスに壁が1個ずつ建てられている
-// Q個のクエリ処理後に残っている壁の数を求める
-// クエリ: Rq, Cqが与えられる
-// (Rq, Cq)に爆弾を置いて壁を爆破する
-// (Rq, Cq)に壁が存在する場合はその壁を破壊して処理を終了する
-// (Rq, Cq)に壁が存在しない場合は(Rq, Cq)から上下左右に見て最初に現れる壁を破壊する
 int main() {
   int H, W, Q; cin >> H >> W >> Q;
+  // g1[i]はi行目に残っている壁の位置を列番号で持っている
+  // g2[j]はj列目に残っている壁の位置を行番号で持っている
+  vector<set<int>> g1(H), g2(W);
+  rep(i, H) {
+    rep(j, W) {
+      g1[i].insert(j);
+      g2[j].insert(i);
+    }
+  }
 
-  // 壁が残ってるときtrue
-  vector<vector<bool>> Grid(H, vector<bool>(W, true));
-  // 壁の残存数
-  int ans = H * W;
-  int minU = H, minD = 0, minL = W, minR = 0;
-  rep(_, Q) {
+  // (i, j)を2つの配列から消す無名関数
+  auto erase = [&](int i, int j) { g1[i].erase(j), g2[j].erase(i); };
+  while(Q--) {
     int R, C; cin >> R >> C;
     R--; C--;
-    // (Rq, Cq)に壁が存在しているとき
-    if (Grid[R][C]) {
-      Grid[R][C] = false;
-      chmin(minU, R - 1);
-      chmin(minD, R + 1);
-      chmin(minL, C - 1);
-      chmin(minR, C + 1);
-      ans--;
+    // その座標に壁がある == 配列のsetの中に座標がある
+    if (g1[R].count(C)) {
+      erase(R, C);
       continue;
     }
 
-    // 上方向への爆破
-    if (R > 0) {
-      int r = min(minU, R - 1);
-      if (r >= 0 && Grid[r][C]) {
-        Grid[r][C] = false;
-        chmin(minU, r);
-        break;
-      } 
+    // 上
+    // lower_boundでとってきたiteratorの1個前が爆破される
+    {
+      auto it = g2[C].lower_bound(R);
+      // 一番最初の要素のときは、爆弾より上に壁が無いということなのでスキップする
+      if (it != begin(g2[C])) erase(*prev(it), C);
     }
 
-    // 下方向への爆破
-    if (R < H - 1) {
-      int r = min(minD, R + 1);
-      if (r >= 0 && Grid[r][C]) {
-        Grid[r][C] = false;
-        chmin(minU, r);
-        break;
-      } 
+    // 下
+    {
+      auto it = g2[C].lower_bound(R);
+      if (it != end(g2[C])) erase(*it, C);
     }
 
     // 左
-    if (C > 0) {
-      for(int i = C - 1; i >= 0; i--) {
-        if (Grid[R][i]) {
-          Grid[R][i] = false;
-          ans--;
-          break;
-        }
-      }
+    {
+      auto it = g1[R].lower_bound(C);
+      if (it != begin(g1[R])) erase(R, *prev(it));
     }
+
     // 右
-    if (C < W - 1) {
-      for(int i = C + 1; i < W; i++) {
-        if (Grid[R][i]) {
-          Grid[R][i] = false;
-          ans--;
-          break;
-        }
-      }
+    {
+      auto it = g1[R].lower_bound(C);
+      if (it != end(g1[R])) erase(R, *it);
     }
   }
+  int ans = 0;
+  rep(i, H) ans += g1[i].size();
   cout << ans << endl;
 }
