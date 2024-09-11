@@ -70,10 +70,8 @@ int main() {
       // 偶数回目のとき
       chmax(dp[i + 1][0], 2 * A[i] + dp[i][1]);
     }
-    if (dp[i][0] != -1) {
-      // 奇数回目のとき
-      chmax(dp[i + 1][1], A[i] + dp[i][0]);
-    }
+    // 奇数回目のとき
+    chmax(dp[i + 1][1], A[i] + dp[i][0]);
   }
   cout << max(dp[N][0], dp[N][1]) << endl;
 }
