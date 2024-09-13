@@ -17,15 +17,9 @@ void print_vector(vector<T> &vec) {
   }
 }
 
-// けんけんぱで移動したときに取りうる値ってmod3しか無い気がする
-// 1 -> 2
-// 1 -> 2 -> 3 -> 4 -> 5 -> 1
-//   -> 4 -> 6
-//   -> 5
 int main() {
   int N, M, S, T; cin >> N >> M;
   map<int, set<int>> sides;
-  map<int, set<int>> mods;
   rep(i, M) {
     int u, v; cin >> u >> v;
     u--; v--;
@@ -36,7 +30,6 @@ int main() {
   queue<int> q; q.push(S);
   vector<int> distances(N, -1);
   distances[S] = 0;
-  mods[S].insert(0);
   while(!q.empty()) {
     vector<set<int>> vec(4);
     int p = q.front(); q.pop();
@@ -52,9 +45,8 @@ int main() {
     int mod = distance % 3;
     for(int x: vec[3]) {
       if (x == p) continue;
-      if (!mods[x].count(mod)) {
+      if (distances[x] == -1) {
         distances[x] = distance;
-        mods[x].insert(mod);
         if (x == T) {
           cout << distances[x] << endl;
           return 0;
