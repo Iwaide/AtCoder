@@ -35,23 +35,28 @@ int main() {
   vector<vector<char>> Maze(H, vector<char>(W));
   rep(i, H) rep(j, W) cin >> Maze[i][j];
 
-  // { x, y, warp_cnt }のtuple
-  queue<tuple<int, int, int>> q;
+  // [ワープ回数] = queue
+  // 0-1BFSでやってみる
+  vector<queue<pair<int, int>>> ques(2);
   // 行ったところ。中身をワープ回数にしておく
   vector<vector<int>> visited(H, vector<int>(W, -1));
   visited[Ch][Cw] = 0;
-  q.push({ Ch, Cw, 0 });
-  while(!q.empty()) {
-    int px, py, w_cnt;
-    tie(px, py, w_cnt) = q.front(); q.pop();
+  ques[0].push({ Ch, Cw });
+  int warp_cnt = 0;
+  while(!ques[warp_cnt % 2].empty()) {
+    auto &q = ques[warp_cnt % 2];
+    int px, py;
+    tie(px, py) = q.front(); q.pop();
     // 上下左右移動
     rep(j, 4) {
       int x = px + dx[j], y = py + dy[j];
       if (x >= 0 && x < H && y >= 0 && y < W) {
-        if (Maze[x][y] == '.' && (visited[x][y] == -1 || visited[x][y] > w_cnt)) {
-          // ワープ回数だけ入れたい
-          visited[x][y] = w_cnt;
-          q.push({x, y, w_cnt});
+        if (Maze[x][y] == '.') {
+          if ((visited[x][y] == -1 || visited[x][y] > warp_cnt)) {
+            // ワープ回数だけ入れたい
+            visited[x][y] = warp_cnt;
+            q.push({x, y});
+          }
         }
       }
     }
@@ -62,12 +67,15 @@ int main() {
 
         int wx = px + k, wy = py + l;
         if (wx >= 0 && wx < H && wy >= 0 && wy < W) {
-          if (Maze[wx][wy] == '.' && (visited[wx][wy] == -1 || visited[wx][wy] > (w_cnt + 1))) {
-            visited[wx][wy] = w_cnt + 1;
-            q.push({wx, wy, w_cnt + 1});
+          if (Maze[wx][wy] == '.' && (visited[wx][wy] == -1)) {
+            visited[wx][wy] = warp_cnt + 1;
+            ques[(warp_cnt + 1) % 2].push({wx, wy});
           }
         }
       }
+    }
+    if (ques[warp_cnt % 2].empty()) {
+      warp_cnt++;
     }
   }
   cout << visited[Dh][Dw] << endl;
