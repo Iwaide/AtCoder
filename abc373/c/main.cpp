@@ -17,27 +17,21 @@ void print_vector(vector<T> &vec) {
   }
 }
 
-// H = (3, 1, 4, 1, 5, 9, 2, 6)
-// i = 7 Hi = 6 {}
-// i = 6 Hi = 2 {6}
-// i = 5 Hi = 9 {2, 6}
-// i = 4 Hi = 5 {9}
-// i = 3 Hi = 1 {5, 9}
-// i = 2 Hi = 4 {1, 5, 9}
-// i = 1 Hi = 1 {4, 5, 9}
-// i = 0 Hi = 3 {1, 4, 5, 9}
-// ビルHiを追加するとき、前回求めたリストについてHiよりも低い建物を削除していき新たにビルHiを挿入すｒ
+// 長さNの整数列A, B |Ai, Bi| <= 10^9
+// 1以上N以下の整数i,jを選んでAi, Bjの値を最大化しろ
 int main() {
   int N; cin >> N;
-  vector<int> H(N);
-  rep(i, N) cin >> H[i];
-  vector<int> res;
-  stack<int> st;
-  for(int i = N - 1; i >= 0; i--) {
-    res.push_back(st.size());
-    while(!st.empty() && st.top() < H[i]) st.pop();
-    st.push(H[i]);
+  ll Amax = LONG_LONG_MIN, Bmax = LONG_LONG_MIN;
+  rep(i, N) {
+    ll Ai;
+    cin >> Ai;
+    chmax(Amax, Ai);
   }
-  reverse(all(res));
-  print_vector(res);
+  rep(i, N) {
+    ll Bi;
+    cin >> Bi;
+    chmax(Bmax, Bi);
+  }
+  cout << (Amax + Bmax) << endl;
 }
+
