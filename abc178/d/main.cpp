@@ -59,11 +59,13 @@ int main() {
   // ....4のときはdp[v-4]
   // ....Sのときはdp[S-S = 0]
   // dpをSまで計算する
-  for(int v = 1; v <= S; v++) {
+  for(int v = 3; v <= S; v++) {
     // 各vについてdp[0]...dp[v-3]まで足してく
-    for(int d = 0; d <= v - 3; d++) {
-      dp[v] += dp[d] % MOD;
-    }
+    // dp[v] = dp[v-3] + dp[v-4]...dp[0]
+    // dp[v-1]  dp[v-4] ... dp[0]
+    // 式変形で下記のように書ける
+    // dp[v] = dp[v-3] + dp[v-1]
+    dp[v] = (dp[v - 3] + dp[v - 1]) % MOD;
   }
   cout << dp[S] % MOD << endl;
 }
