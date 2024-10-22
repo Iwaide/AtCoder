@@ -23,30 +23,29 @@ void print_vector(vector<T> &vec) {
 // Si, Sj, Skをこの順に結合して得られる長さ3の文字列が回文となる
 // Sは長さ1以上2*10^5以下
 // 回文になる条件はSiとSkが同じ文字であること
-// A 1, 3, 6
-// B, 4, 5
-// C, 2
-// みたいな感じになってればいい気がする
+// 真ん中を固定してそこからiとkを逆算して求める
+// i j kで分割してjを左からずらしていく
 int main() {
-  string S; cin >> S;
-  map<char, vector<int>> m;
-  rep(i, S.size()) {
-    m[S[i]].push_back(i);
-  }
+  string s; cin >> s;
+  // lcntはiの組, rcntはjの組
+  map<char, int> lcnt, rcnt;
+  // rcntを作っておく
+  rep(i, s.size()) rcnt[s[i]]++;
+
   ll ans = 0;
-  // 各文字種に対して
-  for(auto p : m) {
-    // 1回しか出現しなかったら回文にならないのでスキップ
-    if (p.second.size() == 1) {
-      continue;
+  rep(i, s.size()) {
+    // jをiの位置に持ってくる
+    // rcntから除去
+    rcnt[s[i]]--;
+
+    // 各文字種に対して
+    for(char c = 'A'; c <= 'Z'; c++) {
+      ans += (ll) lcnt[c] * rcnt[c];
     }
-    // 2重ループを回すと良くないか…
-    for(int i = 0; i < p.second.size() - 1; i++) {
-      for(int j = i + 1; j < p.second.size(); j++) {
-        ans += p.second[j] - p.second[i] - 1;
-      }
-    }
+
+    // 計算終わったらlcntに追加しておく
+    lcnt[s[i]]++;
   }
+
   cout << ans << endl;
 }
-
