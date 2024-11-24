@@ -19,37 +19,21 @@ void print_vector(vector<T> &vec) {
 
 // Tは11/22文字列
 // Sの中で11/22文字列となるような部分文字列の長さの最大値を求めよ
+// /を決め売ったときの左右の1, 2の広がりを調べる
 int main() {
   int N; cin >> N;
   string S; cin >> S;
-  // 0: 1をカウントする 1: 2をカウントする
-  int mode = 0;
-  map<char, int> cnt;
   int ans = 0;
-  for(int i = 0; i < S.size(); i++) {
-    if (S[i] == '/') chmax(ans, 1);
-
-    if (mode == 0) {
-      if (S[i] == '1') {
-        cnt['1'] += 1;
-      } else if (S[i] == '/') {
-        mode = 1;
-      } else {
-        cnt['1'] = 0; cnt['2'] = 0;
-      }
-    } else if (mode == 1) {
-      if (S[i] == '2') {
-        cnt['2'] += 1;
-        chmax(ans, min(cnt['2'], cnt['1']) * 2 + 1);
-      } else {
-        chmax(ans, min(cnt['2'], cnt['1']) * 2 + 1);
-        mode = 0;
-        cnt['1'] = 0; cnt['2'] = 0;
-        if (S[i] == '1') {
-          cnt['1'] += 1;
-        }
-      }
+  rep(i, N) {
+    if (S[i] != '/') continue;
+    int d = 0;
+    while(true) {
+      int l = i - (d + 1), r = i + (d + 1);
+      if (l < 0 && r > N) break;
+      if (S[l] != '1' || S[r] != '2') break;
+      d++;
     }
+    chmax(ans, d * 2 + 1);
   }
   cout << ans << endl;
 }
