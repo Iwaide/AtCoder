@@ -55,41 +55,88 @@ void print_vector(vector<T> &vec) {
 //   }
 // }
 
+// int main() {
+//   ll X, Y, Z, K;
+//   cin >> X >> Y >> Z >> K;
+//   vector<ll> A(X), B(Y), C(Z);
+//   rep(i, X) cin >> A[i];
+//   rep(i, Y) cin >> B[i];
+//   rep(i, Z) cin >> C[i];
+//   // vector<ll> AB;
+//   // rep(i, X) {
+//   //   rep(j, Y) {
+//   //     AB.push_back(A[i] + B[j]);
+//   //   }
+//   // }
+//   // sort(all(AB), greater<ll>());
+//   // sort(all(C), greater<ll>());
+//   // vector<ll> ans;
+//   // rep(i, min(K, X * Y)) {
+//   //   rep(j, min(Z, K)) {
+//   //     ans.push_back(AB[i] + C[j]);
+//   //   }
+//   // }
+//   // sort(all(ans), greater<ll>());
+//   // rep(i, K) cout << ans[i] << endl;
+//   sort(all(A), greater<ll>());
+//   sort(all(B), greater<ll>());
+//   sort(all(C), greater<ll>());
+//   vector<ll> ans;
+//   rep(i, X) {
+//     rep(j, Y) {
+//       rep(k, Z) {
+//         if ((i + 1) * (j + 1) * (k + 1) <= K) ans.push_back(A[i] + B[j] + C[k]);
+//         else break;
+//       }
+//     }
+//   }
+//   sort(all(ans), greater<ll>());
+//   rep(i, K) cout << ans[i] << endl;
+// }
+
+int X, Y, Z, K, BCN;
+vector<ll> A, B, C, BC;
+// K以上の個数となるような美味しさの合計Xの値を求める
+bool solve(ll x) {
+  int cnt = 0;
+  rep(i, X) {
+    int index = lower_bound(all(BC), x - A[i]) - BC.begin();
+    cnt += BCN - index;
+  }
+  return K <= cnt;
+}
+ll infl = 30000000001;
+
 int main() {
-  ll X, Y, Z, K;
   cin >> X >> Y >> Z >> K;
-  vector<ll> A(X), B(Y), C(Z);
+  A.resize(X), B.resize(Y), C.resize(Z);
   rep(i, X) cin >> A[i];
   rep(i, Y) cin >> B[i];
   rep(i, Z) cin >> C[i];
-  // vector<ll> AB;
-  // rep(i, X) {
-  //   rep(j, Y) {
-  //     AB.push_back(A[i] + B[j]);
-  //   }
-  // }
-  // sort(all(AB), greater<ll>());
-  // sort(all(C), greater<ll>());
-  // vector<ll> ans;
-  // rep(i, min(K, X * Y)) {
-  //   rep(j, min(Z, K)) {
-  //     ans.push_back(AB[i] + C[j]);
-  //   }
-  // }
-  // sort(all(ans), greater<ll>());
-  // rep(i, K) cout << ans[i] << endl;
-  sort(all(A), greater<ll>());
-  sort(all(B), greater<ll>());
-  sort(all(C), greater<ll>());
+
+  rep(i, Y) rep(j, Z) BC.push_back(B[i] + C[j]); 
+  sort(all(BC));
+  BCN = BC.size();
+
+  // K以上の個数となるような美味しさの合計Xの値を求める
+  ll ok = 0, ng = infl;
+  while(ok + 1 != ng) {
+    ll mid = (ok + ng) / 2; 
+    if (solve(mid)) ok = mid;
+    else ng = mid;
+  }
+  reverse(all(BC));
   vector<ll> ans;
+  // Xを求めたら実際にAとBCの組み合わせでok以上のものをansに入れる
   rep(i, X) {
-    rep(j, Y) {
-      rep(k, Z) {
-        if ((i + 1) * (j + 1) * (k + 1) <= K) ans.push_back(A[i] + B[j] + C[k]);
-        else break;
-      }
+    for(auto bc : BC) {
+      if (ok < A[i] + bc) ans.push_back(A[i] + bc);
+      // sortしているのでこれ以下は不要
+      else break;
     }
   }
+  // Kに満たない個数しか入っていないということは、残りは全部Xであるということ
+  while(ans.size() < K) ans.push_back(ok);
   sort(all(ans), greater<ll>());
   rep(i, K) cout << ans[i] << endl;
 }
