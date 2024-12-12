@@ -21,31 +21,72 @@ void print_vector(vector<T> &vec) {
 // 赤い点と青い点は赤い点のx座標が青い点のx座標より小さく、また赤い点のy座標も青い点のy座標より小さいとき仲良しペアになれる
 // 最大で何個の仲良しペアを作れるか
 // 1 <= N <= 100
+// int main() {
+//   int N; cin >> N;
+//   vector<pair<int, int>> A(N), B(N);
+//   rep(i, N) cin >> A[i].first >> A[i].second;
+//   rep(i, N) cin >> B[i].first >> B[i].second;
+//   // 青点をx座標でソート
+//   sort(all(B));
+//   // ペアになった赤点
+//   vector<bool> paired(N, false);
+//   int ans = 0;
+//   for(auto b : B) {
+//     tuple<int, int, int> red = { -1, -1, -1 };
+//     rep(i, N) {
+//       if (paired[i]) continue;
+//       auto a = A[i];
+//       if (a.first < b.first && a.second < b.second) {
+//         if (get<2>(red) < a.second) {
+//           red = { i, a.first, a.second };
+//         }
+//       }
+//     }
+//     if (get<0>(red) != -1) {
+//       ans++;
+//       paired[get<0>(red)] = true;
+//     }
+//   }
+//   cout << ans << endl;
+// }
+
+map<int, vector<int>> graph;
+vector<bool> visited;
+vector<int> match;
+
+bool dfs(int r) {
+  for(int blue : graph[r]) {
+    if (visited[blue]) continue;
+    visited[blue] = true;
+    if (match[blue] == -1 || dfs(match[blue])) {
+      match[blue] = r;
+      return true;
+    }
+  }
+  return false;
+}
 int main() {
   int N; cin >> N;
-  vector<pair<int, int>> A(N), B(N);
-  rep(i, N) cin >> A[i].first >> A[i].second;
+  vector<pair<int, int>> R(N), B(N);
+  rep(i, N) cin >> R[i].first >> R[i].second;
   rep(i, N) cin >> B[i].first >> B[i].second;
-  // 青点をx座標でソート
-  sort(all(B));
-  // ペアになった赤点
-  vector<bool> paired(N, false);
-  int ans = 0;
-  for(auto b : B) {
-    tuple<int, int, int> red = { -1, -1, -1 };
-    rep(i, N) {
-      if (paired[i]) continue;
-      auto a = A[i];
-      if (a.first < b.first && a.second < b.second) {
-        if (get<2>(red) < a.second) {
-          red = { i, a.first, a.second };
-        }
+
+  // // 赤点と青点をつなぐグラフ構造を作る
+  rep(i, N) {
+    auto red = R[i];
+    rep(j, N) {
+      auto blue = B[j];
+      if (red.first < blue.first && red.second < blue.second) {
+        graph[i].push_back(j);
       }
     }
-    if (get<0>(red) != -1) {
-      ans++;
-      paired[get<0>(red)] = true;
-    }
+  }
+
+  match.assign(N, -1);
+  int ans = 0;
+  rep(i, N) {
+    visited.assign(N, false);
+    if (dfs(i)) ans++;
   }
   cout << ans << endl;
 }
