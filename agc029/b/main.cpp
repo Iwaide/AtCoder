@@ -33,21 +33,16 @@ int main() {
   pow_2[0] = 1;
   rep(i, 32) pow_2[i + 1] = pow_2[i] * 2;
 
-  vector<bool> paired(N, false);
   int ans = 0;
   for(auto b: B) {
     auto a = A[b];
     for(auto idx : a) {
-      if (paired[idx]) continue;
       bool is_pair = false;
       auto init_j = lower_bound(all(pow_2), b * 2) - pow_2.begin();
       for(int j = init_j; pow_2[j] > b; j--) {
         ll p = pow_2[j];
         for(auto h : A[p - b]) {
           if (idx == h) continue;
-          if (paired[h]) continue;
-          paired[idx] = true;
-          paired[h] = true;
           is_pair = true;
           ans++;
           A[p - b].erase(h);
