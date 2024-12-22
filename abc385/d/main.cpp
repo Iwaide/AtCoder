@@ -40,42 +40,50 @@ int main() {
     if (Di == 'U') {
       // yの値を指すindex
       auto s = XN[Sx].lower_bound(Sy);
+      auto e = s;
       ll to = Sy + Ci;
-      while(s != XN[Sx].end() && *s <= to) {
+      while(e != XN[Sx].end() && *e <= to) {
         ans++;
-        YN[*s].erase(Sx);
-        s = XN[Sx].erase(s);
+        YN[*e].erase(Sx);
+        e++;
       }
+      XN[Sx].erase(s, e);
       Sy = to;
     } else if (Di == 'D') {
       // yの値を指すindex
       ll to = Sy - Ci;
       auto s = XN[Sx].lower_bound(to);
-      while(s != XN[Sx].end() && *s <= Sy) {
+      auto e = s;
+      while(e != XN[Sx].end() && *e <= Sy) {
         ans++;
-        YN[*s].erase(Sx);
-        s = XN[Sx].erase(s);
+        YN[*e].erase(Sx);
+        e++;
       }
+      XN[Sx].erase(s, e);
       Sy = to;
     } else if (Di == 'R') {
       // xの値を指すindex
       auto s = YN[Sy].lower_bound(Sx);
+      auto e = s;
       ll to = Sx + Ci;
-      while(s != YN[Sy].end() && *s <= to) {
+      while(e != YN[Sy].end() && *e <= to) {
         ans++;
-        XN[*s].erase(Sy);
-        s = YN[Sy].erase(s);
+        XN[*e].erase(Sy);
+        e++;
       }
+      YN[Sy].erase(s, e);
       Sx = to;
     } else if (Di == 'L') {
       // xの値を指すindex
       ll to = Sx - Ci;
       auto s = YN[Sy].lower_bound(to);
-      while(s != YN[Sy].end() && *s <= Sx) {
+      auto e = s;
+      while(e != YN[Sy].end() && *e <= Sx) {
         ans++;
-        XN[*s].erase(Sy);
-        s = YN[Sy].erase(s);
+        XN[*e].erase(Sy);
+        e++;
       }
+      YN[Sy].erase(s, e);
       Sx = to;
     }
   }
