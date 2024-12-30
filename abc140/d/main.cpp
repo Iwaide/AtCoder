@@ -28,13 +28,13 @@ void print_vector(vector<T> &vec) {
 int main() {
   int N, K; cin >> N >> K;
   string S; cin >> S;
-  int group = 0;
+  int group_cnt = 0;
   for(int i = 0; i < S.size();) {
     int j = i + 1;
-    while(S[i] == S[j] && j < S.size()) j++;
+    while(S[i] == S[j] && j < N) j++;
+    group_cnt++;
     i = j;
-    group++;
   }
-  cout << N - max(1, (group - K * 2)) << endl;
+  cout << N - max(1, (group_cnt - 2 * K)) << endl;
 }
 
