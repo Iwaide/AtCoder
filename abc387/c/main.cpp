@@ -16,56 +16,55 @@ void print_vector(vector<T> &vec) {
     }
   }
 }
-// 4325で考える
-ll count_snake_numbers(ll num) {
-  string str = to_string(num);
+ll int_pow(ll a, ll b) {
+  ll res = 1;
+  rep(_, b) res *= a;
+  return res;
+}
+
+// Rを4565と考える
+ll count_snake_numbers(ll R) {
+  string s = to_string(R);
+  vector<int> digit;
+  rep(i, s.size()) digit.push_back(s[i] - '0');
+
   ll ans = 0;
-  // 999までのへび数を求める
-  for(int i = 0; i < str.size() - 2; i++) {
-    for(int j = 1; j < 10; j++) {
-      ll tmp = j;
-      for(int k = 0; k < i; k++) tmp *= j;
-      ans += tmp;
+  // 1. R自体が蛇数か、そうでないか
+  // 4565は蛇数ではない
+  int d1 = digit[0];
+  bool is_snake = true;
+  for(int i = 1; i <= digit.size(); i++) {
+    if (i == digit.size()) {
+      ans++; break;
     }
+    ans += int_pow(d1, digit.size() - (i + 1)) * min(d1, digit[i]);
+    if (digit[i] >= d1) break;
   }
-  // 最大位の数
-  int a = str[0] - '0';
-  vector<int> vec;
-  // 4323を考える
-  for(int i = 1; i < str.size(); i++) {
-    // 組み合わせの数
-    vec.push_back(min(a - 1, str[i] - '0') + 1);
-  }
-  ll tmp = 1;
-  for(auto v : vec) tmp *= v;
-  // 4323~4000まで求めた
-  ans += tmp;
-  a--;
-  // 3222 ~ 1000までを求める
-  while(a > 0) {
-    vector<int> vec2;
-    for(int i = 1; i < str.size(); i++) {
-      vec2.push_back(a);
+
+  for(int i = 0; i < digit.size(); i++) {
+    int mx = (i ? 9 : digit[0] - 1);
+    for(int j = 1; j <= mx; j++) {
+      ans += int_pow(j, digit.size() - 1 - i);
     }
-    ll tmp2 = 1;
-    for(auto v : vec2) tmp2 *= v;
-    ans += tmp2;
-    a--;
   }
   return ans;
 }
 
-// 10進数表記したときに、先頭の桁の数字がそれ以外のどの桁の数字よりも心に大きくなるものをへび数と呼ぶ
-// L以上R以下のへび数が何個あるかもとめよ
-// とりあえず桁数-1までは求められる
-// 99 の場合 1 + 2 + ... + 9
-// 999 の場合 1 * 1 + 2 * 2 ... + 9 * 9
-// 例えば4325の1000までの数を求めたいときは
-// 
+// Rがn桁の数であり、上からi桁目の数がdiであるとする
+// R以下の任意の正整数xは以下のいずれかちょうど1つの条件を満たす
+// 1. x = Rである
+// 2. xはn桁の数であり、上からk(1 <= k <= n -1)桁目までの数がRと一致し、上からk+1桁目の数がdk+1より小さい
+// 3. xはn桁の数であり、上から1桁目の数がd1より小さい
+// 4. xはk(1 <= k <= n -1)桁の数である
+// それぞれが蛇数であるものの個数を計算する
+// 1. Rが蛇数ならば1個、そうでないなら0個
+// 2. あるi(2 <= i <= k)について、d1 <= diならば0個、そうでないならk + 1桁目の数がd1未満かつdk+1未満で
+// k+ 2桁目以降の数がすべてd1未満なら良いので、min{ d1, dk+1 }* d1^n - (k + 1)
+// 3. 上から1桁目の数が1以上d1未満で、2桁目以降の数がそれより小さければいい
+// 4. 上から1桁目の数が1以上9未満で、2桁目以降の数がそれより小さければいい
 int main() {
-  // ll L, R; cin >> L >> R;
-  // cout << count_snake_numbers(R) - count_snake_numbers(L) << endl; 
-  ll L; cin >> L;
-  cout << count_snake_numbers(L) << endl;
+  ll L, R;
+  cin >> L >> R;
+  cout << count_snake_numbers(R) - count_snake_numbers(L - 1) << endl;
 }
 
