@@ -48,22 +48,10 @@ int main() {
       }
     }
   }
-
-  if (both == 0) {
-    cout << ans + min(firstB, lastA) << endl;
-  } else if (firstB == 0 && lastA == 0){
-    cout << ans + (both - 1) << endl;
+  if (firstB > 0 || lastA > 0) {
+    cout << ans + both + min(firstB, lastA) << endl;
   } else {
-    ans += min(firstB, lastA);
-    if (firstB != lastA) {
-      cout << ans + both << endl;
-    } else {
-      if (firstB > 0 && lastA > 0) {
-        cout << ans + both << endl;
-      } else {
-        cout << ans + both - 1 << endl;
-      }
-    }
+    cout << ans + max(both - 1, 0) << endl;
   }
 }
 
